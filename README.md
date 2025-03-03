@@ -21,3 +21,28 @@ module CardGame =
 
 	type PickupCard = (Hand * Card) -> Hand
 ```
+
+## Languages
+
+- BQN
+- C#
+- Elm
+- Erlang
+- Elixir
+- F#
+- Gleam
+- Go
+- C
+- C++
+- Haskell
+- Java
+- JavaScript
+- Kotlin
+- OCaml
+- Perl
+- Python
+- Ruby
+- Roc
+- Rust
+- Swift
+- TypeScript
