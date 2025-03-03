@@ -1,19 +1,27 @@
-import Foundation
-
 enum Suit {
-    case club, diamond, spade, heart
+    case club
+    case diamond
+    case spade
+    case heart
 }
 
-enum Rank: Int {
-    case two = 2, three, four, five, six, seven, eight, nine, ten
-    case jack, queen, king, ace
+enum Rank {
+    case two
+    case three
+    case four
+    case five
+    case six
+    case seven
+    case eight
+    case nine
+    case ten
+    case jack
+    case queen
+    case king
+    case ace
 }
 
-struct Card {
-    let suit: Suit
-    let rank: Rank
-}
-
+typealias Card = (suit: Suit, rank: Rank)
 typealias Hand = [Card]
 typealias Deck = [Card]
 
@@ -27,11 +35,5 @@ struct Game {
     var players: [Player]
 }
 
-func deal(deck: inout Deck) -> (Deck, Card)? {
-    guard let card = deck.popLast() else { return nil }
-    return (deck, card)
-}
-
-func pickupCard(hand: inout Hand, card: Card) {
-    hand.append(card)
-}
+typealias Deal = (Deck) -> (remainingDeck: Deck, dealtCard: Card)
+typealias PickupCard = ((hand: Hand, card: Card)) -> Hand

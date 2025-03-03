@@ -1,21 +1,29 @@
-%% Define suits and ranks as atoms
--define(SUITS, [club, diamond, spade, heart]).
--define(RANKS, [two, three, four, five, six, seven, eight, nine, ten, jack, queen, king, ace]).
+-module(card_game).
+-export([]).
 
-%% Type Aliases (Informal, as Erlang doesn't have type aliases)
-%% - Card: {Suit, Rank}
-%% - Hand: List of Cards
-%% - Deck: List of Cards
+% Suits as atoms
+-type suit() :: club | diamond | spade | heart.
 
--record(player, {name :: string(), hand :: list()}).
--record(game, {deck :: list(), players :: list()}).
+% Ranks as atoms
+-type rank() :: two | three | four | five | six | seven | eight | nine | ten | jack | queen | king | ace.
 
-%% Function type equivalents (not strictly enforced in Erlang)
-%% - Deal: fun(Deck) -> {Deck, Card}.
-%% - PickupCard: fun(Hand, Card) -> Hand.
+% Card is a tuple of suit and rank
+-type card() :: {suit(), rank()}.
 
-%% Example function: Deal a card from the deck
-deal([Card | RestOfDeck]) -> {RestOfDeck, Card}.
+% Hand is a list of cards
+-type hand() :: [card()].
 
-%% Example function: Add a card to a hand
-pickup_card(Hand, Card) -> [Card | Hand].
+% Deck is a list of cards
+-type deck() :: [card()].
+
+% Player is a map with name and hand
+-type player() :: #{name => string(), hand => hand()}.
+
+% Game is a map with deck and players
+-type game() :: #{deck => deck(), players => [player()]}.
+
+% Deal function type
+-type deal() :: fun((deck()) -> {deck(), card()}).
+
+% PickupCard function type
+-type pickup_card() :: fun(({hand(), card()}) -> hand()).

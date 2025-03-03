@@ -1,22 +1,32 @@
+package com.cardgame.model;
+
 import java.util.List;
 
-enum Suit { CLUB, DIAMOND, SPADE, HEART }
-enum Rank { TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE }
+public class CardGame {
+    public enum Suit {
+        CLUB, DIAMOND, SPADE, HEART
+    }
 
-record Card(Suit suit, Rank rank) {}
+    public enum Rank {
+        TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN,
+        JACK, QUEEN, KING, ACE
+    }
 
-type Hand = List<Card>;
-type Deck = List<Card>;
+    public record Card(Suit suit, Rank rank) {}
 
-record Player(String name, List<Card> hand) {}
-record Game(List<Card> deck, List<Player> players) {}
+    public record Player(String name, List<Card> hand) {}
 
-@FunctionalInterface
-interface Deal {
-    Pair<List<Card>, Card> apply(List<Card> deck);
-}
+    public record Game(List<Card> deck, List<Player> players) {}
 
-@FunctionalInterface
-interface PickupCard {
-    List<Card> apply(List<Card> hand, Card card);
+    @FunctionalInterface
+    public interface Deal {
+        DealResult apply(List<Card> deck);
+    }
+
+    public record DealResult(List<Card> remainingDeck, Card dealtCard) {}
+
+    @FunctionalInterface
+    public interface PickupCard {
+        List<Card> apply(List<Card> hand, Card card);
+    }
 }

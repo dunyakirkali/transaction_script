@@ -1,50 +1,58 @@
+package CardGame;
 use strict;
 use warnings;
+use Moo;
 
-# Define suits and ranks as arrays
-my @suits = qw(Club Diamond Spade Heart);
-my @ranks = qw(Two Three Four Five Six Seven Eight Nine Ten Jack Queen King Ace);
+# Suit enumeration
+use constant {
+    CLUB    => 'club',
+    DIAMOND => 'diamond',
+    SPADE   => 'spade',
+    HEART   => 'heart'
+};
 
-# A Card is represented as a hash reference
-sub new_card {
-    my ($suit, $rank) = @_;
-    return { suit => $suit, rank => $rank };
+# Rank enumeration
+use constant {
+    TWO   => 'two',
+    THREE => 'three',
+    FOUR  => 'four',
+    FIVE  => 'five',
+    SIX   => 'six',
+    SEVEN => 'seven',
+    EIGHT => 'eight',
+    NINE  => 'nine',
+    TEN   => 'ten',
+    JACK  => 'jack',
+    QUEEN => 'queen',
+    KING  => 'king',
+    ACE   => 'ace'
+};
+
+# Card class
+package Card {
+    use Moo;
+    has 'suit' => (is => 'ro', required => 1);
+    has 'rank' => (is => 'ro', required => 1);
 }
 
-# A Player is represented as a hash reference
-sub new_player {
-    my ($name) = @_;
-    return { name => $name, hand => [] };
+# Player class
+package Player {
+    use Moo;
+    has 'name' => (is => 'ro', required => 1);
+    has 'hand' => (is => 'rw', default => sub { [] });
 }
 
-# A Game is represented as a hash reference
-sub new_game {
-    my (@players) = @_;
-    my @deck = map { my $suit = $_; map { new_card($suit, $_) } @ranks } @suits;
-    return { deck => \@deck, players => \@players };
+# Game class
+package Game {
+    use Moo;
+    has 'deck'    => (is => 'rw', default => sub { [] });
+    has 'players' => (is => 'rw', default => sub { [] });
 }
 
-# Function to deal a card from the deck
-sub deal {
-    my ($deck) = @_;
-    return unless @$deck;
-    return shift @$deck;
-}
+# Function type signatures are implemented through documentation
+# since Perl is dynamically typed
 
-# Function to pick up a card into a hand
-sub pickup_card {
-    my ($hand, $card) = @_;
-    push @$hand, $card;
-}
+# Deal: deck -> (deck, card)
+# PickupCard: (hand, card) -> hand
 
-# Example usage
-my $player1 = new_player("Alice");
-my $player2 = new_player("Bob");
-my $game = new_game($player1, $player2);
-
-# Deal a card to Alice
-my $card = deal($game->{deck});
-pickup_card($player1->{hand}, $card);
-
-# Print Alice's hand
-print "$player1->{name} has: $card->{rank} of $card->{suit}\n";
+1;

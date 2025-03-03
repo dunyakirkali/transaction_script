@@ -1,39 +1,39 @@
-enum Suit {
-  Club = "Club",
-  Diamond = "Diamond",
-  Spade = "Spade",
-  Heart = "Heart"
+export enum Suit {
+	Club = 'CLUB',
+	Diamond = 'DIAMOND',
+	Spade = 'SPADE',
+	Heart = 'HEART'
 }
 
-enum Rank {
-  Two = "Two",
-  Three = "Three",
-  Four = "Four",
-  Five = "Five",
-  Six = "Six",
-  Seven = "Seven",
-  Eight = "Eight",
-  Nine = "Nine",
-  Ten = "Ten",
-  Jack = "Jack",
-  Queen = "Queen",
-  King = "King",
-  Ace = "Ace"
+export enum Rank {
+	Two = 'TWO',
+	Three = 'THREE',
+	Four = 'FOUR',
+	Five = 'FIVE',
+	Six = 'SIX',
+	Seven = 'SEVEN',
+	Eight = 'EIGHT',
+	Nine = 'NINE',
+	Ten = 'TEN',
+	Jack = 'JACK',
+	Queen = 'QUEEN',
+	King = 'KING',
+	Ace = 'ACE'
 }
 
-type Card = [Suit, Rank];
-type Hand = Card[];
-type Deck = Card[];
+export type Card = [Suit, Rank];
+export type Hand = Card[];
+export type Deck = Card[];
 
-interface Player {
-  name: string;
-  hand: Hand;
+export interface Player {
+	name: string;
+	hand: Hand;
 }
 
-interface Game {
-  deck: Deck;
-  players: Player[];
+export interface Game {
+	deck: Deck;
+	players: Player[];
 }
 
-type Deal = (deck: Deck) => [Deck, Card];
-type PickupCard = (hand: Hand, card: Card) => Hand;
+export type Deal = (deck: Deck) => [Deck, Card];
+export type PickupCard = (params: [Hand, Card]) => Hand;

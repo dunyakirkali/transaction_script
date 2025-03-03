@@ -1,50 +1,62 @@
-# Define suits and ranks as constants
-SUITS = [:club, :diamond, :spade, :heart]
-RANKS = [:two, :three, :four, :five, :six, :seven, :eight, :nine, :ten, :jack, :queen, :king, :ace]
+module CardGame
+  # Enums using modules and constants
+  module Suit
+    CLUB = :club
+    DIAMOND = :diamond
+    SPADE = :spade
+    HEART = :heart
 
-# A Card is represented as a Struct
-Card = Struct.new(:suit, :rank) do
-  def to_s
-    "#{rank.capitalize} of #{suit.capitalize}"
+    ALL = [CLUB, DIAMOND, SPADE, HEART].freeze
   end
+
+  module Rank
+    TWO = :two
+    THREE = :three
+    FOUR = :four
+    FIVE = :five
+    SIX = :six
+    SEVEN = :seven
+    EIGHT = :eight
+    NINE = :nine
+    TEN = :ten
+    JACK = :jack
+    QUEEN = :queen
+    KING = :king
+    ACE = :ace
+
+    ALL = [TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE].freeze
+  end
+
+  # Card using Struct for immutable value object
+  Card = Struct.new(:suit, :rank) do
+    def initialize(suit, rank)
+      raise ArgumentError unless Suit::ALL.include?(suit) && Rank::ALL.include?(rank)
+      super
+    end
+  end
+
+  # Player class with typed attributes
+  class Player
+    attr_reader :name
+    attr_accessor :hand
+
+    def initialize(name, hand = [])
+      @name = name
+      @hand = hand
+    end
+  end
+
+  # Game class managing deck and players
+  class Game
+    attr_accessor :deck, :players
+
+    def initialize(deck = [], players = [])
+      @deck = deck
+      @players = players
+    end
+  end
+
+  # Type definitions through documentation since Ruby is duck-typed
+  # Deal = Proc(Deck -> [Deck, Card])
+  # PickupCard = Proc([Hand, Card] -> Hand)
 end
-
-# A Player class
-class Player
-  attr_accessor :name, :hand
-
-  def initialize(name)
-    @name = name
-    @hand = []
-  end
-end
-
-# A Game class
-class Game
-  attr_accessor :deck, :players
-
-  def initialize(players)
-    @deck = SUITS.product(RANKS).map { |suit, rank| Card.new(suit, rank) }.shuffle
-    @players = players
-  end
-
-  def deal
-    @deck.pop
-  end
-
-  def pickup_card(player, card)
-    player.hand << card
-  end
-end
-
-# Example usage
-player1 = Player.new("Alice")
-player2 = Player.new("Bob")
-game = Game.new([player1, player2])
-
-# Deal a card to Alice
-card = game.deal
-game.pickup_card(player1, card)
-
-# Print Alice's hand
-puts "#{player1.name} has: #{card}"

@@ -1,35 +1,28 @@
-# Define suits and ranks as atoms
 defmodule CardGame do
-  @suits [:club, :diamond, :spade, :heart]
-  @ranks [:two, :three, :four, :five, :six, :seven, :eight, :nine, :ten, :jack, :queen, :king, :ace]
+  # Suits as atoms
+  @type suit :: :club | :diamond | :spade | :heart
 
-  def suits, do: @suits
-  def ranks, do: @ranks
+  # Ranks as atoms
+  @type rank :: :two | :three | :four | :five | :six | :seven | :eight | :nine | :ten | :jack | :queen | :king | :ace
 
-  # Define a card as a tuple
-  @type card :: {atom, atom}
-  @type hand :: [card]
-  @type deck :: [card]
+  # Card is a tuple of suit and rank
+  @type card :: {suit, rank}
 
-  # Define a Player struct
-  defmodule Player do
-    defstruct name: "", hand: []
+  # Hand is a list of cards
+  @type hand :: list(card)
 
-    @type t :: %__MODULE__{name: String.t(), hand: CardGame.hand()}
-  end
+  # Deck is a list of cards
+  @type deck :: list(card)
 
-  # Define a Game struct
-  defmodule Game do
-    defstruct deck: [], players: []
+  # Player is a map with name and hand
+  @type player :: %{name: String.t(), hand: hand}
 
-    @type t :: %__MODULE__{deck: CardGame.deck(), players: [CardGame.Player.t()]}
-  end
+  # Game is a map with deck and players
+  @type game :: %{deck: deck, players: list(player)}
 
-  # Function to deal a card from the deck
-  @spec deal(deck) :: {deck, card}
-  def deal([card | rest_of_deck]), do: {rest_of_deck, card}
+  # Deal function type
+  @type deal :: (deck -> {deck, card})
 
-  # Function to pick up a card into a hand
-  @spec pickup_card(hand, card) :: hand
-  def pickup_card(hand, card), do: [card | hand]
+  # PickupCard function type
+  @type pickup_card :: ({hand, card} -> hand)
 end
