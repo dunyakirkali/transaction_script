@@ -34,15 +34,20 @@ module CardGame =
 - Go
 - C
 - C++
+- CUE
 - Haskell
 - Java
 - JavaScript
+- JSON Schema
 - Kotlin
 - OCaml
 - Perl
+- Pkl
+- Protocol Buffers
 - Python
 - Ruby
 - Roc
 - Rust
 - Swift
 - TypeScript
+- Zig

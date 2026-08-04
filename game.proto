@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package cardgame;
+
+enum Suit {
+  SUIT_UNSPECIFIED = 0;
+  SUIT_CLUB = 1;
+  SUIT_DIAMOND = 2;
+  SUIT_SPADE = 3;
+  SUIT_HEART = 4;
+}
+
+enum Rank {
+  RANK_UNSPECIFIED = 0;
+  RANK_TWO = 1;
+  RANK_THREE = 2;
+  RANK_FOUR = 3;
+  RANK_FIVE = 4;
+  RANK_SIX = 5;
+  RANK_SEVEN = 6;
+  RANK_EIGHT = 7;
+  RANK_NINE = 8;
+  RANK_TEN = 9;
+  RANK_JACK = 10;
+  RANK_QUEEN = 11;
+  RANK_KING = 12;
+  RANK_ACE = 13;
+}
+
+message Card {
+  Suit suit = 1;
+  Rank rank = 2;
+}
+
+message Hand {
+  repeated Card cards = 1;
+}
+
+message Deck {
+  repeated Card cards = 1;
+}
+
+message Player {
+  string name = 1;
+  Hand hand = 2;
+}
+
+message Game {
+  Deck deck = 1;
+  repeated Player players = 2;
+}
+
+message DealRequest {
+  Deck deck = 1;
+}
+
+message DealResponse {
+  Deck deck = 1;
+  Card card = 2;
+}
+
+message PickupCardRequest {
+  Hand hand = 1;
+  Card card = 2;
+}
+
+message PickupCardResponse {
+  Hand hand = 1;
+}
+
+service CardGameService {
+  rpc Deal(DealRequest) returns (DealResponse);
+  rpc PickupCard(PickupCardRequest) returns (PickupCardResponse);
+}

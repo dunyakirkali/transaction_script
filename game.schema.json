@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CardGame",
+  "$ref": "#/$defs/Game",
+  "$comment": "JSON Schema cannot model functions; Deal and PickupCard are represented by their input and output shapes.",
+  "$defs": {
+    "Suit": {
+      "type": "string",
+      "enum": ["Club", "Diamond", "Spade", "Heart"]
+    },
+    "Rank": {
+      "type": "string",
+      "enum": [
+        "Two",
+        "Three",
+        "Four",
+        "Five",
+        "Six",
+        "Seven",
+        "Eight",
+        "Nine",
+        "Ten",
+        "Jack",
+        "Queen",
+        "King",
+        "Ace"
+      ]
+    },
+    "Card": {
+      "type": "object",
+      "properties": {
+        "suit": { "$ref": "#/$defs/Suit" },
+        "rank": { "$ref": "#/$defs/Rank" }
+      },
+      "required": ["suit", "rank"],
+      "additionalProperties": false
+    },
+    "Hand": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Card" }
+    },
+    "Deck": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Card" }
+    },
+    "Player": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "hand": { "$ref": "#/$defs/Hand" }
+      },
+      "required": ["name", "hand"],
+      "additionalProperties": false
+    },
+    "Game": {
+      "type": "object",
+      "properties": {
+        "deck": { "$ref": "#/$defs/Deck" },
+        "players": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Player" }
+        }
+      },
+      "required": ["deck", "players"],
+      "additionalProperties": false
+    },
+    "DealInput": {
+      "$ref": "#/$defs/Deck"
+    },
+    "DealOutput": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/Deck" },
+        { "$ref": "#/$defs/Card" }
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "PickupCardInput": {
+      "type": "array",
+      "prefixItems": [
+        { "$ref": "#/$defs/Hand" },
+        { "$ref": "#/$defs/Card" }
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "PickupCardOutput": {
+      "$ref": "#/$defs/Hand"
+    }
+  }
+}

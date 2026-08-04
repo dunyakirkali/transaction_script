@@ -1,0 +1,28 @@
+module CardGame
+
+typealias Suit = "Club" | "Diamond" | "Spade" | "Heart"
+
+typealias Rank =
+  "Two" | "Three" | "Four" | "Five" | "Six" | "Seven" | "Eight"
+  | "Nine" | "Ten" | "Jack" | "Queen" | "King" | "Ace"
+
+class Card {
+  suit: Suit
+  rank: Rank
+}
+
+typealias Hand = Listing<Card>
+typealias Deck = Listing<Card>
+
+class Player {
+  name: String
+  hand: Hand
+}
+
+class Game {
+  deck: Deck
+  players: Listing<Player>
+}
+
+typealias Deal = (Deck) -> Pair<Deck, Card>
+typealias PickupCard = (Pair<Hand, Card>) -> Hand
