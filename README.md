@@ -67,12 +67,12 @@ Compare implementations within their purpose before comparing them across catego
 
 | Dimension | What to measure | Weight |
 |---|---|---:|
-| Readability and beauty | Semantic clarity, visual noise, and consistency | 15% |
+| Readability and beauty | Semantic clarity, visual noise, and consistency | 10% |
 | Model fidelity | Support for sums, products, aliases, records, and functions | 15% |
 | Safety | Which invalid states are rejected, and when | 15% |
 | Authoring experience | Setup, syntax, and iteration speed | 10% |
 | Diagnostics | Error clarity and location | 5% |
-| Interoperability | Code generation, standard formats, and supported languages | 20% |
+| Interoperability | Code generation, standard formats, and supported languages | 25% |
 | Evolution | Ease and safety of changing the model | 10% |
 | Tooling | Formatter, validator, LSP, and documentation | 5% |
 | Runtime and dependencies | Runtime requirements and deployment complexity | 5% |
@@ -153,17 +153,38 @@ Keep two forms of output:
 1. **Raw evidence:** commands, timings, errors, generated code, and evolution diffs.
 2. **Summary matrix:** scores and short observations.
 
-The following provisional baseline covers the F# source and the recently added cross-language models. Replace these estimates and add the remaining languages after running the standard tasks above.
+The following provisional baseline covers every current implementation. Replace these estimates with measured results from the standard tasks above.
 
 | Implementation | Readability | Fidelity | Safety | Authoring | Diagnostics | Interop | Evolution | Tooling | Runtime | Weighted total | Key observation |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| F# | 5 | 5 | 5 | 4 | 4 | 3 | 4 | 4 | 3 | 4.20 | Direct algebraic model with native function types |
-| JSON Schema | 3 | 3 | 4 | 3 | 3 | 5 | 3 | 5 | 4 | 3.70 | Broad data interoperability, but no behavior |
-| Pkl | 4 | 4 | 4 | 4 | 4 | 3 | 4 | 3 | 3 | 3.70 | Readable typed configuration and authoring |
+| BQN | 1 | 2 | 1 | 2 | 1 | 1 | 2 | 1 | 4 | 1.50 | Very compact and executable, but inaccessible and untyped |
+| C# | 4 | 4 | 4 | 4 | 5 | 3 | 4 | 5 | 3 | 3.80 | Records and delegates map cleanly; model stays .NET-local |
+| Elm | 5 | 5 | 5 | 4 | 5 | 3 | 4 | 4 | 4 | 4.20 | Excellent algebraic types and diagnostics; interop centers on JSON and JavaScript |
+| Erlang | 3 | 4 | 3 | 4 | 3 | 3 | 4 | 4 | 3 | 3.40 | Compact specs and tuples; Dialyzer provides gradual checking |
+| Elixir | 4 | 4 | 3 | 5 | 4 | 3 | 4 | 4 | 3 | 3.65 | Readable BEAM model; types are not runtime-enforced |
+| F# | 5 | 5 | 5 | 4 | 4 | 3 | 4 | 4 | 3 | 4.10 | Direct algebraic model with native function types |
+| Gleam | 5 | 5 | 5 | 4 | 5 | 4 | 4 | 4 | 4 | 4.45 | ML-style model with BEAM and JavaScript targets |
+| Go | 4 | 4 | 4 | 5 | 4 | 3 | 4 | 5 | 5 | 3.95 | Simple named types and functions; enums admit invalid integers |
+| C | 3 | 3 | 2 | 3 | 2 | 4 | 2 | 5 | 5 | 3.15 | Portable ABI, but manual memory and weak invariants |
+| C++ | 3 | 4 | 3 | 2 | 2 | 3 | 3 | 4 | 5 | 3.15 | Expressive standard-library aliases; complexity and diagnostics cost |
 | CUE | 4 | 3 | 5 | 3 | 4 | 4 | 5 | 4 | 4 | 4.00 | Strong constraints and composition, but no functions |
-| Protocol Buffers | 3 | 3 | 3 | 4 | 4 | 5 | 5 | 5 | 3 | 3.85 | Excellent code generation and schema evolution |
-| Dhall | 4 | 5 | 5 | 3 | 4 | 2 | 4 | 3 | 3 | 3.70 | Strong type fidelity with a smaller ecosystem |
-| Zig | 4 | 4 | 4 | 3 | 4 | 2 | 3 | 4 | 5 | 3.45 | Explicit application model with limited contract tooling |
+| Dhall | 4 | 5 | 5 | 3 | 4 | 2 | 4 | 3 | 3 | 3.60 | Strong type fidelity with a smaller ecosystem |
+| Haskell | 5 | 5 | 5 | 3 | 4 | 2 | 5 | 3 | 3 | 3.80 | Near-perfect algebraic model; limited contract ecosystem |
+| Java | 4 | 4 | 4 | 4 | 5 | 3 | 4 | 5 | 3 | 3.80 | Records and functional interfaces are clear but more ceremonial |
+| JavaScript | 3 | 2 | 1 | 5 | 3 | 4 | 3 | 5 | 4 | 3.15 | Easy JSON sharing, but contracts are comments only |
+| JSON Schema | 3 | 3 | 4 | 3 | 3 | 5 | 3 | 5 | 4 | 3.80 | Broad data interoperability, but no behavior |
+| Kotlin | 5 | 4 | 4 | 4 | 5 | 3 | 4 | 5 | 3 | 3.90 | Concise JVM model; aliases remain structural |
+| OCaml | 5 | 5 | 5 | 3 | 4 | 2 | 5 | 3 | 4 | 3.85 | Direct algebraic model with strong exhaustive checking |
+| Perl | 2 | 2 | 2 | 4 | 2 | 3 | 3 | 2 | 3 | 2.60 | Flexible, but requires Moo and runtime discipline |
+| Pkl | 4 | 4 | 4 | 4 | 4 | 3 | 4 | 3 | 3 | 3.65 | Readable typed configuration and authoring |
+| Protocol Buffers | 3 | 3 | 3 | 4 | 4 | 5 | 5 | 5 | 3 | 3.95 | Excellent code generation and schema evolution |
+| Python | 5 | 4 | 3 | 5 | 4 | 4 | 4 | 5 | 3 | 4.05 | Readable type hints and broad ecosystem; runtime enforcement is optional |
+| Ruby | 4 | 2 | 3 | 5 | 4 | 3 | 3 | 4 | 3 | 3.25 | Readable runtime model; most contracts remain conventional |
+| Roc | 5 | 5 | 5 | 3 | 3 | 2 | 4 | 2 | 5 | 3.70 | Direct functional model, but young tooling and ecosystem |
+| Rust | 4 | 5 | 5 | 4 | 5 | 3 | 5 | 5 | 5 | 4.30 | Strong enums, safety, and mature tooling |
+| Swift | 5 | 5 | 5 | 4 | 4 | 3 | 5 | 4 | 4 | 4.25 | Natural enums, tuples, and function aliases |
+| TypeScript | 5 | 5 | 4 | 5 | 5 | 4 | 4 | 5 | 4 | 4.45 | Excellent structural model and JSON ecosystem; no runtime validation |
+| Zig | 4 | 4 | 4 | 3 | 4 | 2 | 3 | 4 | 5 | 3.35 | Explicit application model with limited contract tooling |
 
 Calculate totals using only applicable dimensions: divide the weighted score by the sum of the applicable weights.
 
