@@ -5,7 +5,9 @@ This comparison answers two separate questions:
 1. **How cleanly does the technology express the card-game model?**
 2. **How effectively can that model be consumed from multiple programming languages?**
 
-The candidates are CUE, Dhall, JSON Schema, Pkl, and Protocol Buffers. Unlike the [programming-language comparison](programming-languages.md), interoperability is central here.
+The candidates are CUE, Dhall, JSON Schema, Pkl, Protocol Buffers, and TypeSpec. Unlike the [programming-language comparison](programming-languages.md), interoperability is central here.
+
+The concrete target is now **TypeScript in the frontend, with Elixir, Rust, and Go backends**. A useful solution must keep the source model close to F# while producing usable contracts for all four ecosystems.
 
 ## Important distinction
 
@@ -22,64 +24,92 @@ These are not equivalent. A JSON parser does not provide the same guarantees as 
 
 | Technology | Source lines | Model clarity | Ceremony | Functions/contracts | Main compromise |
 |---|---:|---:|---:|---|---|
-| Pkl | 28 | 5 | Low | Native function type aliases | Primarily a configuration language, not a wire protocol |
-| CUE | 30 | 4 | Low | Input/output shapes only | Cannot model executable functions |
+| Pkl | 28 | 5 | Low | Native function type aliases | No official TypeScript, Elixir, or Rust generator |
+| CUE | 30 | 4 | Low | Input/output shapes only | Cannot model executable functions or generate all target types directly |
 | Dhall | 42 | 5 | Low | Native function types | Limited mainstream language integration |
+| TypeSpec | 74 | 5 | Medium | HTTP operations and request/response models | Native types require a second code-generation step from OpenAPI |
 | Protocol Buffers | 74 | 3 | High | RPC request/response messages and services | Wrappers, numeric tags, and unspecified enum values add ceremony |
-| JSON Schema | 92 | 3 | High | Input/output schemas only | Verbose and behavior-free |
+| JSON Schema | 92 | 3 | High | Input/output schemas only | Verbose, behavior-free, and dependent on community generators |
 
-Source lines are only supporting evidence: fewer lines do not automatically mean a better model. The Pkl and Dhall files most closely resemble the original F# type model. Protobuf is more verbose because it describes a durable wire contract rather than application-local aliases.
+Source lines are only supporting evidence: fewer lines do not automatically mean a better model. Pkl and Dhall most closely resemble the original F# declarations in isolation. TypeSpec is the cleanest candidate that also describes an API contract and reaches all four target ecosystems through OpenAPI.
 
-## Language reach
+## Target-language fit
 
-| Technology | Official typed targets or host bindings | Standard outputs / interchange | Reach assessment |
-|---|---|---|---|
-| Pkl | Go, Java, Kotlin, Swift bindings and typed code generators | JSON, JSONnet, YAML, XML, plist, properties, and custom text output | Strong official typed integration for four ecosystems; broad untyped reach through standard output formats |
-| Protocol Buffers | C++, C#, Dart, Go, Java, Kotlin, Objective-C, PHP, Python, and Ruby code generation; other languages use third-party implementations | Stable protobuf binary and JSON mapping | Strongest official multi-language contract and code-generation story |
-| JSON Schema | No single official code generator; the official tools catalog lists validators and generators across many ecosystems | JSON | Broadest validation reach, but type generation quality is ecosystem-dependent |
-| CUE | Official Go API; other languages generally consume exported data | JSON, YAML, TOML, JSON Schema, OpenAPI, and Protocol Buffers integration | Excellent validation and format bridge; limited native host-language integration |
-| Dhall | Reference implementation plus community implementations and bindings | JSON and YAML are the common interoperability path | Portable configuration with weaker typed integration into mainstream application languages |
+The table distinguishes direct official support from indirect or community tooling.
 
-Language support changes over time. Recheck the linked official compatibility pages before using this table for a technology decision.
+| Technology | TypeScript | Elixir | Rust | Go | Verdict for this stack |
+|---|---|---|---|---|---|
+| TypeSpec → OpenAPI | Strong generators | Client/server generators available | Client/server generators available | Strong generators | **Best authoring fit:** one clean source, with OpenAPI as the portable contract |
+| Protocol Buffers | Strong community/Buf generators | Community Protobuf and gRPC libraries | Mature Prost/Tonic ecosystem | Official generator | **Best wire-contract fit:** strongest evolution model, but less F#-like and tooling ownership varies |
+| JSON Schema | Strong ecosystem | Validation is stronger than type generation | Validation and generation available | Validation and generation available | Broad reach, but poor source authoring and inconsistent generated APIs |
+| Pkl | No official generator | No official generator | No official generator | Official binding and generator | Does not cover this stack |
+| CUE | Indirect through exported schemas | Indirect through exported schemas | Indirect through exported schemas | Official API | Excellent validation, but not a direct shared-type solution |
+| Dhall | Indirect through JSON/YAML | Indirect through JSON/YAML | Indirect through JSON/YAML | Indirect through JSON/YAML | Clean source model without dependable native type generation |
+
+### TypeSpec pipeline
+
+```text
+                ┌─ TypeScript client/types
+TypeSpec ──OpenAPI─┼─ Elixir client/server contract
+                ├─ Rust client/server contract
+                └─ Go client/server contract
+```
+
+TypeSpec itself emits the OpenAPI contract. OpenAPI tooling performs the language-specific generation, so generated-code quality must be tested separately for each target.
+
+### Protocol Buffers pipeline
+
+```text
+                 ┌─ TypeScript via Protobuf-ES or another generator
+Protobuf schema ─┼─ Elixir via community Protobuf/gRPC tooling
+                 ├─ Rust via Prost/Tonic
+                 └─ Go via the official generator
+```
+
+This pipeline offers a stronger binary contract and schema-evolution rules. Its drawback is that the source schema and service wrappers are more ceremonial than F# or TypeSpec.
 
 ## Capability matrix
 
 Scores run from 1 (poor) to 5 (excellent).
 
-| Technology | Clean model | Type fidelity | Validation | Typed language support | Standard-format reach | Evolution | Best fit |
-|---|---:|---:|---:|---:|---:|---:|---|
-| Pkl | 5 | 4 | 5 | 4 | 5 | 4 | Typed, programmable configuration shared with Go/JVM/Swift applications |
-| Protocol Buffers | 3 | 4 | 3 | 5 | 4 | 5 | Durable cross-language APIs and messages |
-| JSON Schema | 3 | 3 | 5 | 2 | 5 | Validating JSON at system boundaries |
+| Technology | Clean model | Type fidelity | Validation | Target-stack support | Evolution | Best fit |
+|---|---:|---:|---:|---:|---:|---|
+| TypeSpec | 5 | 5 | 4 | 5 | 4 | F#-like API authoring that emits OpenAPI for all target languages |
+| Protocol Buffers | 3 | 4 | 3 | 5 | 5 | Durable cross-language APIs and binary messages |
+| JSON Schema | 3 | 3 | 5 | 3 | 3 | Validating JSON at system boundaries |
+| Pkl | 5 | 4 | 5 | 1 | 4 | Typed configuration when Go/JVM/Swift cover the consumers |
 | CUE | 4 | 4 | 5 | 2 | 5 | Constraint-based configuration, validation, and schema unification |
-| Dhall | 5 | 5 | 5 | 2 | 4 | Typed, deterministic configuration where JSON/YAML output is sufficient |
+| Dhall | 5 | 5 | 5 | 1 | 4 | Typed configuration where JSON/YAML output is sufficient |
 
-## Practical conclusions
+## Recommendation for TypeScript + Elixir + Rust + Go
 
-- **Cleanest representation:** Pkl and Dhall.
-- **Best official target-language coverage:** Protocol Buffers.
-- **Best JSON validation ecosystem:** JSON Schema.
-- **Best constraints and schema composition:** CUE.
-- **Best balance of clean authoring and typed application integration:** Pkl, when Go, Java, Kotlin, or Swift cover the consumers.
-- **Best choice when consumers span many languages:** Protocol Buffers for generated APIs; JSON Schema when JSON validation matters more than generated types.
+1. **Start with TypeSpec and emit OpenAPI 3.** It best matches the desired F#-like authoring experience while retaining access to generators for every target language.
+2. **Keep Protocol Buffers as the alternative** when binary transport, gRPC/Connect, strict compatibility checks, or high-throughput services matter more than authoring elegance.
+3. **Treat JSON Schema as an emitted validation artifact**, not the preferred hand-authored source.
+4. **Remove Pkl, CUE, and Dhall from the final shortlist** for shared native types. They remain useful configuration or validation tools, but do not directly cover this target stack.
+
+The decision should be finalized only after comparing the generated TypeScript, Elixir, Rust, and Go output. Source-language cleanliness alone is insufficient.
 
 ## Standard comparison tasks
 
 Each technology should be tested with the same evidence:
 
 1. Validate a correct and an incorrect `Game`.
-2. Generate or consume the model from TypeScript, Python, and Go.
-3. Serialize and deserialize a game.
-4. Add a `Joker` card with no suit.
-5. Require a non-empty deck and prevent duplicate cards.
-6. Add an optional player identifier.
-7. Rename a field while preserving old consumers.
-8. Record commands, generated code, runtime dependencies, errors, and evolution diffs.
+2. Generate contracts for TypeScript, Elixir, Rust, and Go.
+3. Compare generated type names, enums, optional fields, unions, and runtime dependencies.
+4. Serialize and deserialize a game in every target language.
+5. Add a `Joker` card with no suit.
+6. Require a non-empty deck and prevent duplicate cards.
+7. Add an optional player identifier.
+8. Rename a field while preserving old consumers.
+9. Record commands, generated code, errors, and evolution diffs.
 
 ## Official references
 
-- [Pkl documentation](https://pkl-lang.org/main/current/index.html), including its [Java](https://pkl-lang.org/main/current/java-binding/index.html), [Kotlin](https://pkl-lang.org/main/current/kotlin-binding/index.html), [Go](https://pkl-lang.org/go/current/index.html), and [Swift](https://pkl-lang.org/swift/current/index.html) integrations.
-- [Protocol Buffers language reference](https://protobuf.dev/reference/).
+- [TypeSpec data types](https://typespec.io/docs/language-basics/built-in-types/) and [OpenAPI emitter](https://typespec.io/docs/emitters/openapi3/cli/).
+- [OpenAPI Generator target list](https://openapi-generator.tech/docs/generators/), including TypeScript, Elixir, Rust, and Go generators.
+- [Protocol Buffers language reference](https://protobuf.dev/reference/), [Protobuf-ES](https://github.com/bufbuild/protobuf-es), [Elixir Protobuf](https://github.com/elixir-protobuf/protobuf), and [Prost](https://github.com/tokio-rs/prost).
+- [Pkl documentation](https://pkl-lang.org/main/current/index.html), including its [Go integration](https://pkl-lang.org/go/current/index.html).
 - [JSON Schema tools directory](https://json-schema.org/tools/).
 - [CUE interoperation documentation](https://cuelang.org/docs/concept/how-cue-works-with-go/).
 - [Dhall documentation](https://docs.dhall-lang.org/).

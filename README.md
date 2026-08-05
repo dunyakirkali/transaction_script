@@ -50,6 +50,7 @@ module CardGame =
 - Roc
 - Rust
 - Swift
+- TypeSpec
 - TypeScript
 - Zig
 
@@ -65,7 +66,7 @@ The comparison emphasizes readability, type-model fidelity, safety, authoring ex
 
 ### 2. Portable models and schemas
 
-[Compare CUE, Dhall, JSON Schema, Pkl, and Protocol Buffers](docs/portable-models.md) by:
+[Compare CUE, Dhall, JSON Schema, Pkl, Protocol Buffers, and TypeSpec](docs/portable-models.md) by:
 
 - cleanliness of the card-game model;
 - validation and type fidelity;

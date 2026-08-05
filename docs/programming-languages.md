@@ -2,7 +2,7 @@
 
 This comparison answers: **How cleanly can a programming language express the card-game domain model for application-local use?**
 
-It intentionally excludes CUE, Dhall, JSON Schema, Pkl, and Protocol Buffers. Those technologies are compared separately in [Portable model and schema comparison](portable-models.md).
+It intentionally excludes CUE, Dhall, JSON Schema, Pkl, Protocol Buffers, and TypeSpec. Those technologies are compared separately in [Portable model and schema comparison](portable-models.md).
 
 ## Evaluation
 
