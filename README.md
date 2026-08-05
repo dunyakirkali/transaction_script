@@ -153,9 +153,11 @@ Keep two forms of output:
 1. **Raw evidence:** commands, timings, errors, generated code, and evolution diffs.
 2. **Summary matrix:** scores and short observations.
 
-| Implementation | Beauty | Fidelity | Safety | Ease | Interop | Evolution | Tooling | Key observation |
-|---|---:|---:|---:|---:|---:|---:|---:|---|
-| | | | | | | | | |
+| Implementation | Readability | Fidelity | Safety | Authoring | Diagnostics | Interop | Evolution | Tooling | Runtime | Weighted total | Key observation |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| | | | | | | | | | | | |
+
+Calculate totals using only applicable dimensions: divide the weighted score by the sum of the applicable weights.
 
 Report winners by use case instead of only by total score:
 
