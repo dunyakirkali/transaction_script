@@ -153,9 +153,17 @@ Keep two forms of output:
 1. **Raw evidence:** commands, timings, errors, generated code, and evolution diffs.
 2. **Summary matrix:** scores and short observations.
 
+The following provisional baseline covers the F# source and the recently added cross-language models. Replace these estimates and add the remaining languages after running the standard tasks above.
+
 | Implementation | Readability | Fidelity | Safety | Authoring | Diagnostics | Interop | Evolution | Tooling | Runtime | Weighted total | Key observation |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| | | | | | | | | | | | |
+| F# | 5 | 5 | 5 | 4 | 4 | 3 | 4 | 4 | 3 | 4.20 | Direct algebraic model with native function types |
+| JSON Schema | 3 | 3 | 4 | 3 | 3 | 5 | 3 | 5 | 4 | 3.70 | Broad data interoperability, but no behavior |
+| Pkl | 4 | 4 | 4 | 4 | 4 | 3 | 4 | 3 | 3 | 3.70 | Readable typed configuration and authoring |
+| CUE | 4 | 3 | 5 | 3 | 4 | 4 | 5 | 4 | 4 | 4.00 | Strong constraints and composition, but no functions |
+| Protocol Buffers | 3 | 3 | 3 | 4 | 4 | 5 | 5 | 5 | 3 | 3.85 | Excellent code generation and schema evolution |
+| Dhall | 4 | 5 | 5 | 3 | 4 | 2 | 4 | 3 | 3 | 3.70 | Strong type fidelity with a smaller ecosystem |
+| Zig | 4 | 4 | 4 | 3 | 4 | 2 | 3 | 4 | 5 | 3.45 | Explicit application model with limited contract tooling |
 
 Calculate totals using only applicable dimensions: divide the weighted score by the sum of the applicable weights.
 
