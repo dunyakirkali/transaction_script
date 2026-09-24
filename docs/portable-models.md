@@ -88,7 +88,27 @@ Scores run from 1 (poor) to 5 (excellent).
 3. **Treat JSON Schema as an emitted validation artifact**, not the preferred hand-authored source.
 4. **Remove Pkl, CUE, and Dhall from the final shortlist** for shared native types. They remain useful configuration or validation tools, but do not directly cover this target stack.
 
-The decision should be finalized only after comparing the generated TypeScript, Elixir, Rust, and Go output. Source-language cleanliness alone is insufficient.
+The generated-code experiment below shows that TypeSpec is useful for transport clients, but does not replace the concise handwritten domain models.
+
+## Generated TypeSpec experiment
+
+TypeSpec 1.14.0 emitted OpenAPI 3, then OpenAPI Generator 7.24.0 generated models and clients using `typescript-fetch`, `elixir`, `rust`, and `go`. Generated files live under the ignored `generated/` directory.
+
+| Target | Handwritten lines | Generated model lines | Complete generated lines | Check | Main difference |
+|---|---:|---:|---:|---|---|
+| TypeScript | 39 | 709 | 1,334 | `tsc --noEmit` passes | Runtime serializers and HTTP client replace simple aliases and function types |
+| Elixir | 28 | 233 | 909 | `mix compile` passes | Struct modules replace maps and tuples; enum specs describe empty structs although decoding returns strings |
+| Rust | 43 | 337 | 780 | `cargo check` passes | Serde models and a Reqwest client replace aliases and function pointers |
+| Go | 49 | 1,494 | 3,438 | `go test ./...` passes | Constructors, getters, nullable wrappers, JSON validation, and an HTTP client dominate the output |
+
+All four generators produce `Card`, `Player`, `Game`, `Suit`, `Rank`, four request/response models, and HTTP operations. They do not preserve the original model exactly:
+
+- `Hand` and `Deck` disappear because TypeSpec aliases are expanded in OpenAPI.
+- `Card` is an object because `game.tsp` models it as an object, not the original F# tuple.
+- `Deal` and `PickupCard` become network client calls rather than local function types.
+- Generated enum wire values are strings such as `"Club"`; some handwritten examples use atoms, integers, or uppercase strings.
+
+**Conclusion:** generate these clients when applications need a shared HTTP contract and serialization code. Keep handwritten types when the goal is a small, idiomatic, application-local domain model.
 
 ## Standard comparison tasks
 
