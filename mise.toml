@@ -1,0 +1,4 @@
+[tools]
+"npm:@typespec/compiler" = "1.14.0"
+"npm:typescript" = "6.0.2"
+yarn = "1.22.22"
